@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieHub - All Your Streaming Services in One Place</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #e50914;
+            --dark: #141414;
+            --light: #f4f4f4;
+            --gray: #757575;
+            --card-bg: #181818;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Registration Page Styles */
+        #registration-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1489599804158-9f795f5a8c86?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .registration-form {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 40px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: var(--light);
+        }
+
+        .password-strength {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            color: var(--gray);
+        }
+
+        .password-strength.strong {
+            color: #4CAF50;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--primary);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #f40612;
+        }
+
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: white;
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: var(--gray);
+            z-index: 1;
+        }
+
+        .divider span {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 0 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Main Content Styles */
+        #main-content {
+            display: none;
+        }
+
+        header {
+            background-color: rgba(20, 20, 20, 0.9);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-bell.active {
+            color: var(--primary);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero {
+            padding: 60px 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                        url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .filter-tab.active {
+            background-color: var(--primary);
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .movie-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.05);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .movie-info {
+            padding: 15px;
+        }
+
+        .movie-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .movie-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 20px;
+            background-color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .quality-options {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .quality-option {
+            padding: 10px 15px;
+            background-color: #333;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .quality-option.free {
+            border: 2px solid #4CAF50;
+        }
+
+        .quality-option.premium {
+            border: 2px solid var(--primary);
+        }
+
+        .payment-section {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .tv-stations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .tv-station-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .tv-station-card:hover {
+            transform: scale(1.05);
+        }
+
+        .tv-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background-color: #000;
+            padding: 40px 0 20px;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 15px;
+            color: var(--gray);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--light);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .movies-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Registration Page -->
+    <section id="registration-page">
+        <div class="container">
+            <div class="logo">MovieHub</div>
+            <p class="tagline">All your favorite movies and shows in one place</p>
+            
+            <div class="registration-form">
+                <h2 class="form-title">Create Your Account</h2>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Mobile Number</label>
+                    <input type="tel" id="phone" placeholder="Enter your mobile number">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Set a strong password">
+                    <div class="password-strength" id="password-strength">Password must be at least 8 characters with uppercase, lowercase, number and special character</div>
+                </div>
+                
+                <button class="btn" id="register-btn">Register</button>
+                
+                <div class="divider">
+                    <span>OR</span>
+                </div>
+                
+                <div class="social-login">
+                    <button class="social-btn" id="google-login">
+                        <i class="fab fa-google"></i>
+                        Continue with Google
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content (Hidden until registration) -->
+    <section id="main-content">
+        <header>
+            <div class="container nav-container">
+                <div class="logo">MovieHub</div>
+                
+                <nav class="nav-links">
+                    <a href="#" class="active">Home</a>
+                    <a href="#" id="hot-now-link">Hot Now</a>
+                    <a href="#" id="newest-link">Newest</a>
+                    <a href="#" id="on-tv-link">On TV Now</a>
+                    <a href="#" id="subscribe-link">Subscribe Now</a>
+                </nav>
+                
+                <div class="user-actions">
+                    <div class="notification-bell" id="notification-bell">
+                        <i class="far fa-bell"></i>
+                        <div class="notification-badge" id="notification-badge" style="display: none;">3</div>
+                    </div>
+                    <div class="user-profile">
+                        <i class="far fa-user"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <section class="hero">
+            <div class="container">
+                <h1>Unlimited Movies, TV Shows, and More.</h1>
+                <p>Watch anywhere. Cancel anytime. All your favorite streaming services in one place.</p>
+                <button class="btn">Start Watching</button>
+            </div>
+        </section>
+        
+        <div class="container">
+            <h2 class="section-title">Hot Now</h2>
+            <div class="filter-tabs">
+                <div class="filter-tab active">All</div>
+                <div class="filter-tab">Action</div>
+                <div class="filter-tab">Adventure</div>
+                <div class="filter-tab">Comedy</div>
+                <div class="filter-tab">Drama</div>
+                <div class="filter-tab">Horror</div>
+                <div class="filter-tab">Sci-Fi</div>
+            </div>
+            
+            <div class="movies-grid" id="hot-now-movies">
+                <!-- Movies will be populated by JavaScript -->
+            </div>
+            
+            <h2 class="section-title">New Releases</h2>
+            <div class="movies-grid" id="new-releases-movies">
+                <!-- Movies will be populated by JavaScript -->
+            </div>
+            
+            <h2 class="section-title">On TV Now</h2>
+            <div class="tv-stations-grid" id="tv-stations">
+                <!-- TV stations will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>Streaming Services</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">Netflix</a></li>
+                            <li><a href="#">Showmax</a></li>
+                            <li><a href="#">Amazon Prime</a></li>
+                            <li><a href="#">Hulu</a></li>
+                            <li><a href="#">Disney+</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h3>Help</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">FAQ</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h3>Account</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">My Profile</a></li>
+                            <li><a href="#">Subscription</a></li>
+                            <li><a href="#">Watch History</a></li>
+                            <li><a href="#">Downloaded Content</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="copyright">
+                    &copy; 2023 MovieHub. All rights reserved.
+                </div>
+            </div>
+        </footer>
+    </section>
+    
+    <!-- Movie Options Modal -->
+    <div class="modal" id="movie-options-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-movie-title">Movie Title</h3>
+                <button class="close-modal" id="close-movie-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Choose how you want to watch this movie:</p>
+                <div style="display: flex; gap: 15px; margin: 20px 0;">
+                    <button class="btn" id="watch-live-btn">Watch Live</button>
+                    <button class="btn" id="download-btn">Download</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Download Options Modal -->
+    <div class="modal" id="download-options-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Download Options</h3>
+                <button class="close-modal" id="close-download-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Select your preferred video quality:</p>
+                <div class="quality-options">
+                    <div class="quality-option free" data-quality="260">260p (Free)</div>
+                    <div class="quality-option free" data-quality="360">360p (Free)</div>
+                    <div class="quality-option premium" data-quality="480">480p (Premium)</div>
+                    <div class="quality-option premium" data-quality="720">720p (Premium)</div>
+                    <div class="quality-option premium" data-quality="1080">1080p (Premium)</div>
+                </div>
+                
+                <div class="payment-section" id="payment-section" style="display: none;">
+                    <h4>Premium Download Subscription</h4>
+                    <p>Subscribe for just $1 to unlock HD downloads!</p>
+                    <button class="btn" id="subscribe-download-btn">Subscribe Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- TV Modal -->
+    <div class="modal" id="tv-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-tv-title">TV Station</h3>
+                <button class="close-modal" id="close-tv-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Watch live TV from this station for only $1</p>
+                <p style="font-size: 0.9rem; margin-top: 10px;">For free access, email sturbornke@gmail.com or call 0794277848</p>
+                <button class="btn" style="margin-top: 20px;">Watch Now</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Subscription Modal -->
+    <div class="modal" id="subscription-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Subscribe for Notifications</h3>
+                <button class="close-modal" id="close-subscription-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Get notified when new movies are added to our platform!</p>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="notification-email">Email for notifications</label>
+                    <input type="email" id="notification-email" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="notification-phone">Phone for SMS notifications</label>
+                    <input type="tel" id="notification-phone" placeholder="Enter your phone number">
+                </div>
+                <button class="btn" id="confirm-subscription-btn">Subscribe</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample movie data
+        const movies = [
+            { id: 1, title: "The Matrix Resurrections", year: 2021, rating: 7.2, category: "Action", poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 2, title: "Spider-Man: No Way Home", year: 2021, rating: 8.7, category: "Action", poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 3, title: "Dune", year: 2021, rating: 8.1, category: "Sci-Fi", poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 4, title: "No Time To Die", year: 2021, rating: 7.4, category: "Action", poster: "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 5, title: "The Batman", year: 2022, rating: 8.3, category: "Action", poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 6, title: "Black Widow", year: 2021, rating: 6.7, category: "Action", poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 7, title: "Shang-Chi", year: 2021, rating: 7.5, category: "Action", poster: "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 8, title: "Eternals", year: 2021, rating: 6.4, category: "Action", poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" }
+        ];
+
+        // Sample TV stations
+        const tvStations = [
+            { id: 1, name: "HBO", logo: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=60" },
+            { id: 2, name: "CNN", logo: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=60" },
+            { id: 3, name: "BBC", logo: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=60" },
+            { id: 4, name: "Fox", logo: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=60" },
+            { id: 5, name: "ESPN", logo: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=60" },
+            { id: 6, name: "MTV", logo: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=60" }
+        ];
+
+        // DOM Elements
+        const registrationPage = document.getElementById('registration-page');
+        const mainContent = document.getElementById('main-content');
+        const registerBtn = document.getElementById('register-btn');
+        const googleLoginBtn = document.getElementById('google-login');
+        const passwordInput = document.getElementById('password');
+        const passwordStrength = document.getElementById('password-strength');
+        const notificationBell = document.getElementById('notification-bell');
+        const notificationBadge = document.getElementById('notification-badge');
+        const hotNowMoviesGrid = document.getElementById('hot-now-movies');
+        const newReleasesMoviesGrid = document.getElementById('new-releases-movies');
+        const tvStationsGrid = document.getElementById('tv-stations');
+        const movieOptionsModal = document.getElementById('movie-options-modal');
+        const downloadOptionsModal = document.getElementById('download-options-modal');
+        const tvModal = document.getElementById('tv-modal');
+        const subscriptionModal = document.getElementById('subscription-modal');
+        const onTvLink = document.getElementById('on-tv-link');
+        const subscribeLink = document.getElementById('subscribe-link');
+
+        // Password strength checker
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            if (strength === 5) {
+                passwordStrength.textContent = "Strong password";
+                passwordStrength.className = "password-strength strong";
+            } else if (strength >= 3) {
+                passwordStrength.textContent = "Medium password";
+                passwordStrength.className = "password-strength";
+            } else {
+                passwordStrength.textContent = "Weak password";
+                passwordStrength.className = "password-strength";
+            }
+        });
+
+        // Registration
+        registerBtn.addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            
+            if (email && phone && password.length >= 8) {
+                registrationPage.style.display = 'none';
+                mainContent.style.display = 'block';
+                populateMovies();
+                populateTVStations();
+            } else {
+                alert('Please fill all fields correctly. Password must be at least 8 characters.');
+            }
+        });
+
+        // Google login
+        googleLoginBtn.addEventListener('click', function() {
+            registrationPage.style.display = 'none';
+            mainContent.style.display = 'block';
+            populateMovies();
+            populateTVStations();
+        });
+
+        // Populate movies
+        function populateMovies() {
+            // Clear existing content
+            hotNowMoviesGrid.innerHTML = '';
+            newReleasesMoviesGrid.innerHTML = '';
+            
+            // Add movies to Hot Now section
+            movies.forEach(movie => {
+                const movieCard = createMovieCard(movie);
+                hotNowMoviesGrid.appendChild(movieCard);
+            });
+            
+            // Add movies to New Releases section (shuffled for demo)
+            const shuffledMovies = [...movies].sort(() => 0.5 - Math.random());
+            shuffledMovies.forEach(movie => {
+                const movieCard = createMovieCard(movie);
+                newReleasesMoviesGrid.appendChild(movieCard);
+            });
+        }
+
+        // Create movie card
+        function createMovieCard(movie) {
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+            card.innerHTML = `
+                <img src="${movie.poster}" alt="${movie.title}" class="movie-poster">
+                <div class="movie-info">
+                    <div class="movie-title">${movie.title}</div>
+                    <div class="movie-meta">
+                        <span>${movie.year}</span>
+                        <span><i class="fas fa-star"></i> ${movie.rating}</span>
+                    </div>
+                </div>
+            `;
+            
+            card.addEventListener('click', function() {
+                document.getElementById('modal-movie-title').textContent = movie.title;
+                movieOptionsModal.style.display = 'flex';
+            });
+            
+            return card;
+        }
+
+        // Populate TV stations
+        function populateTVStations() {
+            tvStationsGrid.innerHTML = '';
+            
+            tvStations.forEach(station => {
+                const stationCard = document.createElement('div');
+                stationCard.className = 'tv-station-card';
+                stationCard.innerHTML = `
+                    <img src="${station.logo}" alt="${station.name}" class="tv-logo">
+                    <div>${station.name}</div>
+                `;
+                
+                stationCard.addEventListener('click', function() {
+                    document.getElementById('modal-tv-title').textContent = station.name;
+                    tvModal.style.display = 'flex';
+                });
+                
+                tvStationsGrid.appendChild(stationCard);
+            });
+        }
+
+        // Modal close buttons
+        document.getElementById('close-movie-modal').addEventListener('click', function() {
+            movieOptionsModal.style.display = 'none';
+        });
+        
+        document.getElementById('close-download-modal').addEventListener('click', function() {
+            downloadOptionsModal.style.display = 'none';
+        });
+        
+        document.getElementById('close-tv-modal').addEventListener('click', function() {
+            tvModal.style.display = 'none';
+        });
+        
+        document.getElementById('close-subscription-modal').addEventListener('click', function() {
+            subscriptionModal.style.display = 'none';
+        });
+
+        // Watch Live button
+        document.getElementById('watch-live-btn').addEventListener('click', function() {
+            alert('Starting playback... Enjoy the movie!');
+            movieOptionsModal.style.display = 'none';
+        });
+
+        // Download button
+        document.getElementById('download-btn').addEventListener('click', function() {
+            movieOptionsModal.style.display = 'none';
+            downloadOptionsModal.style.display = 'flex';
+        });
+
+        // Quality options
+        document.querySelectorAll('.quality-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const quality = this.getAttribute('data-quality');
+                
+                if (quality === '480' || quality === '720' || quality === '1080') {
+                    document.getElementById('payment-section').style.display = 'block';
+                } else {
+                    alert(`Starting download in ${quality}p quality...`);
+                    downloadOptionsModal.style.display = 'none';
+                }
+            });
+        });
+
+        // Subscribe for downloads
+        document.getElementById('subscribe-download-btn').addEventListener('click', function() {
+            alert('Payment processed! You can now download in HD quality.');
+            downloadOptionsModal.style.display = 'none';
+        });
+
+        // On TV Now link
+        onTvLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('modal-tv-title').textContent = "All TV Stations";
+            tvModal.style.display = 'flex';
+        });
+
+        // Subscribe link
+        subscribeLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            subscriptionModal.style.display = 'flex';
+        });
+
+        // Confirm subscription
+        document.getElementById('confirm-subscription-btn').addEventListener('click', function() {
+            const email = document.getElementById('notification-email').value;
+            const phone = document.getElementById('notification-phone').value;
+            
+            if (email || phone) {
+                notificationBell.classList.add('active');
+                notificationBadge.style.display = 'flex';
+                subscriptionModal.style.display = 'none';
+                alert('Subscription successful! You will receive notifications about new movies.');
+            } else {
+                alert('Please provide at least one contact method (email or phone).');
+            }
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target === movieOptionsModal) {
+                movieOptionsModal.style.display = 'none';
+            }
+            if (e.target === downloadOptionsModal) {
+                downloadOptionsModal.style.display = 'none';
+            }
+            if (e.target === tvModal) {
+                tvModal.style.display = 'none';
+            }
+            if (e.target === subscriptionModal) {
+                subscriptionModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
